@@ -7,9 +7,11 @@ from openai import OpenAI
 app = Flask(__name__, static_folder=".")
 app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
 
+
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
+
 
 @app.route("/health")
 def health():
@@ -18,6 +20,7 @@ def health():
         "project": "SAMANDER AI OTC",
         "provider": "Groq"
     })
+
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
@@ -64,37 +67,35 @@ def analyze():
     )
 
     prompt = f"""
-You are SAMANDER AI, a cautious chart screenshot
-analysis assistant.
+You are SAMANDER AI, a chart screenshot prediction assistant.
 
 Market: {pair}
 Timeframe: 1 minute.
 
-Examine only the visible chart information.
+Analyze the visible chart carefully:
+- Recent price movement
+- Candle direction and structure
+- Visible candlestick patterns
+- Support and resistance
+- Momentum and trend
 
-Analyze:
-1. Recent candle direction and structure.
-2. Visible candlestick patterns.
-3. Possible support and resistance.
-4. MACD only if visible.
-5. Bullish or bearish evidence.
+Predict the direction of the NEXT 1-MINUTE CANDLE.
 
-Return this format:
+Choose the stronger directional possibility based on
+the visible chart evidence.
 
-ESTIMATE: BUY, SELL, or WAIT
-TREND:
-CANDLE PATTERN:
-SUPPORT/RESISTANCE:
-MACD:
-REASON:
-UNCERTAINTY:
+Your entire response MUST be exactly one of these:
 
-Rules:
-- Choose WAIT if the screenshot is unclear.
-- Never invent unseen information.
-- Never guarantee the next candle.
-- Never invent confidence percentages.
-- This is practice analysis, not a trading instruction.
+ESTIMATE: BUY
+
+OR
+
+ESTIMATE: SELL
+
+Do not include explanations, extra words, percentages,
+guarantees, or other text.
+
+Never invent chart information.
 """
 
     try:
@@ -123,13 +124,18 @@ Rules:
                 }
             ],
             temperature=0.2,
-            max_completion_tokens=700
+            max_completion_tokens=50
         )
 
         result = response.choices[0].message.content
 
         if not result:
             raise ValueError("Empty AI response")
+
+        result = result.strip().upper()
+
+        if result not in ["ESTIMATE: BUY", "ESTIMATE: SELL"]:
+            raise ValueError("AI returned an invalid prediction.")
 
         return jsonify({
             "success": True,
@@ -142,7 +148,7 @@ Rules:
         app.logger.exception("Groq analysis failed")
 
         return jsonify({
-            "error": "Groq analysis failed. Check Render logs."
+            "error": "Analysis failed. Check Render logs."
         }), 500
 
 
@@ -157,5 +163,5 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=int(os.getenv("PORT", 5000))
-        )
+    )
     
