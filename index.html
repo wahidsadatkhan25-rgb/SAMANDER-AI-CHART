@@ -3,14 +3,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080d18">
 <title>SAMANDER AI OTC</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#080d18;color:#f4f7ff;font-family:Arial,sans-serif}
 header{padding:22px 18px;background:#101a2b;border-bottom:1px solid #26364e}
-.logo{font-size:25px;font-weight:900;letter-spacing:1px}
+.logo{font-size:25px;font-weight:900}
 .logo span{color:#20c8f4}
 .tag{font-size:11px;color:#8fa4bd;margin-top:7px;letter-spacing:2px}
 main{max-width:760px;margin:auto;padding:18px 14px}
@@ -23,29 +23,24 @@ select{width:100%;padding:15px;background:#0a1424;color:white;border:1px solid #
 .upload strong{display:block;color:#26c9f3;font-size:16px;margin-bottom:8px}
 .upload small{color:#8da1ba}
 input[type=file]{display:none}
-#preview{display:none;width:100%;max-height:360px;object-fit:contain;margin-top:14px;border-radius:10px;background:#050a12}
+#preview{display:none;width:100%;max-height:360px;object-fit:contain;margin-top:14px;border-radius:10px}
 button{width:100%;padding:15px;border:0;border-radius:10px;background:#13a9d5;color:white;font-size:14px;font-weight:bold;margin-top:13px}
 button:disabled{opacity:.45}
-.remove{background:#26364d}
+.secondary{background:#26364d}
 .status{font-size:12px;color:#35c8ef;margin-top:12px;line-height:1.5}
-.result{background:#0a1424;border:1px solid #344761;border-radius:13px;padding:22px;text-align:center}
-.signal{font-size:29px;font-weight:900;color:#f5c45a;margin:12px}
-.muted{color:#91a3bb;font-size:13px;line-height:1.6}
+.result{background:#0a1424;border:1px solid #344761;border-radius:13px;padding:20px;text-align:center}
+.signal{font-size:27px;font-weight:900;color:#f5c45a;margin:12px}
+.muted{color:#91a3bb;font-size:13px;line-height:1.7;white-space:pre-wrap}
 .history-item{border-top:1px solid #26364e;padding:12px 0;font-size:13px;color:#c0ccda;line-height:1.6}
-.history-item:first-child{border:0}
-.clear{background:#26364d;font-size:12px}
 footer{text-align:center;padding:22px;color:#70839d;font-size:11px;line-height:1.7}
 </style>
 </head>
 <body>
-
 <header>
  <div class="logo">SAMANDER <span>AI</span></div>
  <div class="tag">POCKET OPTION OTC ANALYZER</div>
 </header>
-
 <main>
-
  <section class="card">
   <div class="heading"><span class="number">01</span> SELECT OTC PAIR</div>
   <label for="pair">Choose your trading pair</label>
@@ -67,140 +62,156 @@ footer{text-align:center;padding:22px;color:#70839d;font-size:11px;line-height:1
 
  <section class="card">
   <div class="heading"><span class="number">02</span> UPLOAD CHART</div>
-  <label>Take a screenshot of your Pocket Option 1-minute chart.</label>
-
+  <label>Choose a clear Pocket Option 1-minute chart screenshot.</label>
   <label class="upload" for="chartFile">
    <strong>＋ UPLOAD SCREENSHOT</strong>
-   <small>Choose an image from your phone<br>JPG · PNG · WEBP</small>
+   <small>JPG · PNG · WEBP</small>
   </label>
-
   <input id="chartFile" type="file" accept="image/png,image/jpeg,image/webp">
-  <img id="preview" alt="Your uploaded chart">
-
-  <button class="remove" id="removeBtn" style="display:none">REMOVE IMAGE</button>
+  <img id="preview" alt="Chart preview">
+  <button id="removeBtn" class="secondary" style="display:none">REMOVE IMAGE</button>
   <button id="analyzeBtn" disabled>ANALYZE 1-MINUTE CHART</button>
   <div class="status" id="uploadStatus">Waiting for screenshot...</div>
  </section>
 
  <section class="card">
-  <div class="heading"><span class="number">03</span> ANALYSIS</div>
+  <div class="heading"><span class="number">03</span> AI ANALYSIS</div>
   <div class="result">
    <div class="muted">NEXT CANDLE ESTIMATE</div>
    <div class="signal" id="signal">WAIT</div>
-   <div class="muted" id="resultText">
-    Upload a chart to begin.
-   </div>
-   <div class="status" id="engineStatus">
-    AI vision engine: Not connected
-   </div>
+   <div class="muted" id="resultText">Upload a screenshot to begin.</div>
   </div>
  </section>
 
  <section class="card">
   <div class="heading"><span class="number">04</span> ANALYSIS HISTORY</div>
-  <div id="history" class="muted">No screenshots analyzed yet.</div>
-  <button class="clear" id="clearHistory">CLEAR HISTORY</button>
+  <div id="history" class="muted">No analysis yet.</div>
+  <button id="clearHistory" class="secondary">CLEAR HISTORY</button>
  </section>
-
 </main>
-
-<footer>
- SAMANDER AI OTC<br>
- Screenshot-based chart analysis<br>
- Predictions are uncertain. Demo testing only.
-</footer>
+<footer>SAMANDER AI OTC<br>AI estimates are uncertain. Demo testing only.</footer>
 
 <script>
-const fileInput=document.getElementById("chartFile");
-const preview=document.getElementById("preview");
-const analyzeBtn=document.getElementById("analyzeBtn");
-const removeBtn=document.getElementById("removeBtn");
-const statusText=document.getElementById("uploadStatus");
-const resultText=document.getElementById("resultText");
-const signal=document.getElementById("signal");
-const historyBox=document.getElementById("history");
-
+const $=id=>document.getElementById(id);
 let selectedFile=null;
 let previewURL=null;
 
-function loadHistory(){
- const records=JSON.parse(localStorage.getItem("samanderHistory")||"[]");
- if(!records.length){
-  historyBox.textContent="No screenshots analyzed yet.";
-  return;
- }
- historyBox.innerHTML="";
- records.forEach(item=>{
-  const div=document.createElement("div");
-  div.className="history-item";
-  div.textContent=item.date+" — "+item.pair+" — "+item.status;
-  historyBox.appendChild(div);
- });
-}
-
-fileInput.addEventListener("change",()=>{
- const file=fileInput.files[0];
+$("chartFile").addEventListener("change",()=>{
+ const file=$("chartFile").files[0];
  if(!file)return;
 
  if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
-  statusText.textContent="Please select a JPG, PNG or WEBP image.";
-  fileInput.value="";
+  $("uploadStatus").textContent="Choose JPG, PNG or WEBP.";
+  $("chartFile").value="";
   return;
  }
 
  selectedFile=file;
  if(previewURL)URL.revokeObjectURL(previewURL);
  previewURL=URL.createObjectURL(file);
- preview.src=previewURL;
- preview.style.display="block";
- removeBtn.style.display="block";
- analyzeBtn.disabled=false;
- statusText.textContent="Screenshot selected: "+file.name;
- signal.textContent="READY";
- resultText.textContent="Screenshot ready. Connect the AI engine to analyze it.";
+ $("preview").src=previewURL;
+ $("preview").style.display="block";
+ $("removeBtn").style.display="block";
+ $("analyzeBtn").disabled=false;
+ $("uploadStatus").textContent="Screenshot ready: "+file.name;
+ $("signal").textContent="READY";
+ $("resultText").textContent="Ready to analyze your chart.";
 });
 
-removeBtn.addEventListener("click",()=>{
+$("removeBtn").addEventListener("click",()=>{
  selectedFile=null;
- fileInput.value="";
+ $("chartFile").value="";
  if(previewURL)URL.revokeObjectURL(previewURL);
  previewURL=null;
- preview.removeAttribute("src");
- preview.style.display="none";
- removeBtn.style.display="none";
- analyzeBtn.disabled=true;
- statusText.textContent="Waiting for screenshot...";
- signal.textContent="WAIT";
- resultText.textContent="Upload a chart to begin.";
+ $("preview").style.display="none";
+ $("removeBtn").style.display="none";
+ $("analyzeBtn").disabled=true;
+ $("uploadStatus").textContent="Waiting for screenshot...";
+ $("signal").textContent="WAIT";
+ $("resultText").textContent="Upload a screenshot to begin.";
 });
 
-analyzeBtn.addEventListener("click",()=>{
+$("analyzeBtn").addEventListener("click",async()=>{
  if(!selectedFile)return;
 
- signal.textContent="WAIT";
- resultText.textContent=
- "AI is not connected yet. No BUY or SELL prediction has been generated. Your screenshot is ready for the next setup step.";
- document.getElementById("engineStatus").textContent=
- "AI vision engine: Awaiting API connection";
- statusText.textContent="Image selected successfully.";
+ const button=$("analyzeBtn");
+ button.disabled=true;
+ button.textContent="ANALYZING...";
+ $("signal").textContent="WAIT";
+ $("resultText").textContent="AI is examining the screenshot...";
 
+ const data=new FormData();
+ data.append("image",selectedFile);
+ data.append("pair",$("pair").value);
+
+ try{
+  const response=await fetch("/analyze",{
+   method:"POST",
+   body:data
+  });
+  const result=await response.json();
+
+  if(!response.ok)throw new Error(result.error||"Analysis failed");
+
+  const analysis=result.analysis||"No analysis returned.";
+  const match=analysis.match(/ESTIMATE:\s*(BUY|SELL|WAIT)/i);
+  const direction=match?match[1].toUpperCase():"WAIT";
+
+  $("signal").textContent=direction;
+  $("resultText").textContent=analysis;
+
+  saveHistory($("pair").value,direction,analysis);
+  $("uploadStatus").textContent="Analysis completed.";
+ }catch(error){
+  $("signal").textContent="WAIT";
+  $("resultText").textContent=error.message;
+  $("uploadStatus").textContent="Could not complete analysis.";
+ }finally{
+  button.disabled=!selectedFile;
+  button.textContent="ANALYZE 1-MINUTE CHART";
+ }
+});
+
+function saveHistory(pair,direction,analysis){
  const records=JSON.parse(localStorage.getItem("samanderHistory")||"[]");
  records.unshift({
-  pair:document.getElementById("pair").value,
-  date:new Date().toLocaleString(),
-  status:"AI connection pending"
+  pair,
+  direction,
+  analysis,
+  date:new Date().toLocaleString()
  });
  localStorage.setItem("samanderHistory",JSON.stringify(records.slice(0,20)));
- loadHistory();
-});
+ showHistory();
+}
 
-document.getElementById("clearHistory").addEventListener("click",()=>{
+function showHistory(){
+ const records=JSON.parse(localStorage.getItem("samanderHistory")||"[]");
+ const box=$("history");
+ box.replaceChildren();
+
+ if(!records.length){
+  box.textContent="No analysis yet.";
+  return;
+ }
+
+ records.forEach(item=>{
+  const div=document.createElement("div");
+  div.className="history-item";
+  const heading=document.createElement("strong");
+  heading.textContent=item.pair+" — "+item.direction;
+  const date=document.createElement("div");
+  date.textContent=item.date;
+  div.append(heading,date);
+  box.appendChild(div);
+ });
+}
+
+$("clearHistory").addEventListener("click",()=>{
  localStorage.removeItem("samanderHistory");
- loadHistory();
+ showHistory();
 });
 
-loadHistory();
+showHistory();
 </script>
 </body>
-  </html>
-  
+</html>
