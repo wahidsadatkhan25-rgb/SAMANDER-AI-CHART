@@ -6,95 +6,310 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080d18">
 <title>SAMANDER AI OTC</title>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#080d18;color:#f4f7ff;font-family:Arial,sans-serif}
-header{padding:22px 18px;background:#101a2b;border-bottom:1px solid #26364e}
+
+body{
+ background:#080d18;
+ color:#f4f7ff;
+ font-family:Arial,sans-serif;
+}
+
+header{
+ padding:22px 18px;
+ background:#101a2b;
+ border-bottom:1px solid #26364e;
+}
+
 .logo{font-size:25px;font-weight:900}
 .logo span{color:#20c8f4}
-.tag{font-size:11px;color:#8fa4bd;margin-top:7px;letter-spacing:2px}
+.tag{
+ font-size:11px;
+ color:#8fa4bd;
+ margin-top:7px;
+ letter-spacing:2px;
+}
+
 main{max-width:760px;margin:auto;padding:18px 14px}
-.card{background:#111c2e;border:1px solid #26364e;border-radius:16px;padding:18px;margin-bottom:16px}
+
+.card{
+ background:#111c2e;
+ border:1px solid #26364e;
+ border-radius:16px;
+ padding:18px;
+ margin-bottom:16px;
+}
+
 .heading{font-size:16px;font-weight:bold;margin-bottom:15px}
 .number{color:#23c8f1;margin-right:8px}
-label{display:block;color:#a8b7cb;font-size:13px;margin-bottom:9px}
-select{width:100%;padding:15px;background:#0a1424;color:white;border:1px solid #344761;border-radius:10px;font-size:15px}
-.upload{display:block;border:2px dashed #31516d;border-radius:13px;padding:27px 12px;text-align:center;background:#0a1424;cursor:pointer}
-.upload strong{display:block;color:#26c9f3;font-size:16px;margin-bottom:8px}
+
+label{
+ display:block;
+ color:#a8b7cb;
+ font-size:13px;
+ margin-bottom:9px;
+}
+
+select{
+ width:100%;
+ padding:15px;
+ background:#0a1424;
+ color:white;
+ border:1px solid #344761;
+ border-radius:10px;
+ font-size:15px;
+}
+
+.upload{
+ display:block;
+ border:2px dashed #31516d;
+ border-radius:13px;
+ padding:27px 12px;
+ text-align:center;
+ background:#0a1424;
+ cursor:pointer;
+}
+
+.upload strong{
+ display:block;
+ color:#26c9f3;
+ font-size:16px;
+ margin-bottom:8px;
+}
+
 .upload small{color:#8da1ba}
 input[type=file]{display:none}
-#preview{display:none;width:100%;max-height:360px;object-fit:contain;margin-top:14px;border-radius:10px}
-button{width:100%;padding:15px;border:0;border-radius:10px;background:#13a9d5;color:white;font-size:14px;font-weight:bold;margin-top:13px}
+
+#preview{
+ display:none;
+ width:100%;
+ max-height:360px;
+ object-fit:contain;
+ margin-top:14px;
+ border-radius:10px;
+}
+
+button{
+ width:100%;
+ padding:15px;
+ border:0;
+ border-radius:10px;
+ background:#13a9d5;
+ color:white;
+ font-size:14px;
+ font-weight:bold;
+ margin-top:13px;
+}
+
 button:disabled{opacity:.45}
 .secondary{background:#26364d}
-.status{font-size:12px;color:#35c8ef;margin-top:12px;line-height:1.5}
-.result{background:#0a1424;border:1px solid #344761;border-radius:13px;padding:20px;text-align:center}
-.signal{font-size:27px;font-weight:900;color:#f5c45a;margin:12px}
-.muted{color:#91a3bb;font-size:13px;line-height:1.7;white-space:pre-wrap}
-.history-item{border-top:1px solid #26364e;padding:12px 0;font-size:13px;color:#c0ccda;line-height:1.6}
-footer{text-align:center;padding:22px;color:#70839d;font-size:11px;line-height:1.7}
+
+.status{
+ font-size:12px;
+ color:#35c8ef;
+ margin-top:12px;
+ line-height:1.5;
+}
+
+.result{
+ background:#0a1424;
+ border:1px solid #344761;
+ border-radius:13px;
+ padding:25px 15px;
+ text-align:center;
+}
+
+.result-label{
+ color:#91a3bb;
+ font-size:12px;
+ letter-spacing:2px;
+ margin-bottom:20px;
+}
+
+.signal-circle{
+ width:190px;
+ height:190px;
+ margin:0 auto;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ background:#18283b;
+ border:4px solid #607080;
+ box-shadow:0 0 25px #60708044;
+ transition:all .5s ease;
+}
+
+.signal-circle.buy{
+ background:radial-gradient(circle,#176b42,#092b20);
+ border-color:#20e58a;
+ box-shadow:0 0 25px #20e58a88, inset 0 0 25px #20e58a22;
+ animation:pulseGreen 2s infinite;
+}
+
+.signal-circle.sell{
+ background:radial-gradient(circle,#8d2433,#350c17);
+ border-color:#ff405b;
+ box-shadow:0 0 25px #ff405b88, inset 0 0 25px #ff405b22;
+ animation:pulseRed 2s infinite;
+}
+
+.signal-circle.loading{
+ border-color:#25c8f4;
+ box-shadow:0 0 25px #25c8f488;
+ animation:loadingPulse 1s infinite;
+}
+
+.signal{
+ font-size:38px;
+ font-weight:900;
+ letter-spacing:2px;
+ color:white;
+}
+
+.result-subtitle{
+ color:#91a3bb;
+ font-size:12px;
+ margin-top:20px;
+ letter-spacing:1px;
+}
+
+@keyframes pulseGreen{
+ 0%,100%{transform:scale(1);box-shadow:0 0 20px #20e58a66}
+ 50%{transform:scale(1.04);box-shadow:0 0 38px #20e58aaa}
+}
+
+@keyframes pulseRed{
+ 0%,100%{transform:scale(1);box-shadow:0 0 20px #ff405b66}
+ 50%{transform:scale(1.04);box-shadow:0 0 38px #ff405baa}
+}
+
+@keyframes loadingPulse{
+ 0%,100%{transform:scale(1);opacity:.7}
+ 50%{transform:scale(1.04);opacity:1}
+}
+
+.history-item{
+ border-top:1px solid #26364e;
+ padding:12px 0;
+ font-size:13px;
+ color:#c0ccda;
+ line-height:1.6;
+}
+
+.history-item strong{font-size:15px}
+
+footer{
+ text-align:center;
+ padding:22px;
+ color:#70839d;
+ font-size:11px;
+ line-height:1.7;
+}
 </style>
 </head>
+
 <body>
+
 <header>
  <div class="logo">SAMANDER <span>AI</span></div>
  <div class="tag">POCKET OPTION OTC ANALYZER</div>
 </header>
+
 <main>
- <section class="card">
-  <div class="heading"><span class="number">01</span> SELECT OTC PAIR</div>
-  <label for="pair">Choose your trading pair</label>
-  <select id="pair">
-   <option>AUD/CAD OTC</option>
-   <option>AUD/USD OTC</option>
-   <option>EUR/USD OTC</option>
-   <option>GBP/USD OTC</option>
-   <option>USD/JPY OTC</option>
-   <option>EUR/GBP OTC</option>
-   <option>NZD/USD OTC</option>
-   <option>USD/CHF OTC</option>
-   <option>GBP/JPY OTC</option>
-   <option>EUR/JPY OTC</option>
-   <option>USD/CAD OTC</option>
-   <option>GBP/AUD OTC</option>
-  </select>
- </section>
 
- <section class="card">
-  <div class="heading"><span class="number">02</span> UPLOAD CHART</div>
-  <label>Choose a clear Pocket Option 1-minute chart screenshot.</label>
-  <label class="upload" for="chartFile">
-   <strong>＋ UPLOAD SCREENSHOT</strong>
-   <small>JPG · PNG · WEBP</small>
-  </label>
-  <input id="chartFile" type="file" accept="image/png,image/jpeg,image/webp">
-  <img id="preview" alt="Chart preview">
-  <button id="removeBtn" class="secondary" style="display:none">REMOVE IMAGE</button>
-  <button id="analyzeBtn" disabled>ANALYZE 1-MINUTE CHART</button>
-  <div class="status" id="uploadStatus">Waiting for screenshot...</div>
- </section>
+<section class="card">
+ <div class="heading"><span class="number">01</span> SELECT OTC PAIR</div>
+ <label for="pair">Choose your trading pair</label>
+ <select id="pair">
+  <option>AUD/CAD OTC</option>
+  <option>AUD/USD OTC</option>
+  <option>EUR/USD OTC</option>
+  <option>GBP/USD OTC</option>
+  <option>USD/JPY OTC</option>
+  <option>EUR/GBP OTC</option>
+  <option>NZD/USD OTC</option>
+  <option>USD/CHF OTC</option>
+  <option>GBP/JPY OTC</option>
+  <option>EUR/JPY OTC</option>
+  <option>USD/CAD OTC</option>
+  <option>GBP/AUD OTC</option>
+ </select>
+</section>
 
- <section class="card">
-  <div class="heading"><span class="number">03</span> AI ANALYSIS</div>
-  <div class="result">
-   <div class="muted">NEXT CANDLE ESTIMATE</div>
-   <div class="signal" id="signal">WAIT</div>
-   <div class="muted" id="resultText">Upload a screenshot to begin.</div>
+<section class="card">
+ <div class="heading"><span class="number">02</span> UPLOAD CHART</div>
+ <label>Choose a Pocket Option 1-minute chart screenshot.</label>
+
+ <label class="upload" for="chartFile">
+  <strong>＋ UPLOAD SCREENSHOT</strong>
+  <small>JPG · PNG · WEBP</small>
+ </label>
+
+ <input id="chartFile" type="file" accept="image/png,image/jpeg,image/webp">
+ <img id="preview" alt="Chart preview">
+
+ <button id="removeBtn" class="secondary" style="display:none">REMOVE IMAGE</button>
+ <button id="analyzeBtn" disabled>ANALYZE NEXT CANDLE</button>
+
+ <div class="status" id="uploadStatus">Waiting for screenshot...</div>
+</section>
+
+<section class="card">
+ <div class="heading"><span class="number">03</span> NEXT CANDLE PREDICTION</div>
+
+ <div class="result">
+  <div class="result-label">NEXT 1-MINUTE CANDLE</div>
+
+  <div class="signal-circle" id="signalCircle">
+   <div class="signal" id="signal">READY</div>
   </div>
- </section>
 
- <section class="card">
-  <div class="heading"><span class="number">04</span> ANALYSIS HISTORY</div>
-  <div id="history" class="muted">No analysis yet.</div>
-  <button id="clearHistory" class="secondary">CLEAR HISTORY</button>
- </section>
+  <div class="result-subtitle" id="resultSubtitle">
+   UPLOAD CHART TO START
+  </div>
+ </div>
+</section>
+
+<section class="card">
+ <div class="heading"><span class="number">04</span> PREDICTION HISTORY</div>
+ <div id="history" class="muted">No prediction yet.</div>
+ <button id="clearHistory" class="secondary">CLEAR HISTORY</button>
+</section>
+
 </main>
-<footer>SAMANDER AI OTC<br>AI estimates are uncertain. Demo testing only.</footer>
+
+<footer>
+ SAMANDER AI OTC<br>
+ Predictions are uncertain. Demo testing only.
+</footer>
 
 <script>
 const $=id=>document.getElementById(id);
+
 let selectedFile=null;
 let previewURL=null;
+
+function setSignal(direction){
+ const circle=$("signalCircle");
+ circle.className="signal-circle";
+
+ $("signal").textContent=direction;
+
+ if(direction==="BUY"){
+  circle.classList.add("buy");
+  $("resultSubtitle").textContent="NEXT CANDLE: BUY";
+ }else if(direction==="SELL"){
+  circle.classList.add("sell");
+  $("resultSubtitle").textContent="NEXT CANDLE: SELL";
+ }else if(direction==="ANALYZING"){
+  circle.classList.add("loading");
+  $("resultSubtitle").textContent="ANALYZING CHART...";
+ }else{
+  $("resultSubtitle").textContent="UPLOAD CHART TO START";
+ }
+}
 
 $("chartFile").addEventListener("change",()=>{
  const file=$("chartFile").files[0];
@@ -107,28 +322,36 @@ $("chartFile").addEventListener("change",()=>{
  }
 
  selectedFile=file;
+
  if(previewURL)URL.revokeObjectURL(previewURL);
+
  previewURL=URL.createObjectURL(file);
  $("preview").src=previewURL;
  $("preview").style.display="block";
  $("removeBtn").style.display="block";
  $("analyzeBtn").disabled=false;
- $("uploadStatus").textContent="Screenshot ready: "+file.name;
+
+ $("uploadStatus").textContent="Screenshot ready.";
  $("signal").textContent="READY";
- $("resultText").textContent="Ready to analyze your chart.";
+ $("signalCircle").className="signal-circle";
+ $("resultSubtitle").textContent="READY FOR ANALYSIS";
 });
 
 $("removeBtn").addEventListener("click",()=>{
  selectedFile=null;
  $("chartFile").value="";
+
  if(previewURL)URL.revokeObjectURL(previewURL);
  previewURL=null;
+
  $("preview").style.display="none";
  $("removeBtn").style.display="none";
  $("analyzeBtn").disabled=true;
+
  $("uploadStatus").textContent="Waiting for screenshot...";
- $("signal").textContent="WAIT";
- $("resultText").textContent="Upload a screenshot to begin.";
+ $("signal").textContent="READY";
+ $("signalCircle").className="signal-circle";
+ $("resultSubtitle").textContent="UPLOAD CHART TO START";
 });
 
 $("analyzeBtn").addEventListener("click",async()=>{
@@ -137,8 +360,9 @@ $("analyzeBtn").addEventListener("click",async()=>{
  const button=$("analyzeBtn");
  button.disabled=true;
  button.textContent="ANALYZING...";
- $("signal").textContent="WAIT";
- $("resultText").textContent="AI is examining the screenshot...";
+
+ setSignal("ANALYZING");
+ $("uploadStatus").textContent="AI is analyzing your screenshot...";
 
  const data=new FormData();
  data.append("image",selectedFile);
@@ -149,37 +373,46 @@ $("analyzeBtn").addEventListener("click",async()=>{
    method:"POST",
    body:data
   });
+
   const result=await response.json();
 
   if(!response.ok)throw new Error(result.error||"Analysis failed");
 
-  const analysis=result.analysis||"No analysis returned.";
-  const match=analysis.match(/ESTIMATE:\s*(BUY|SELL|WAIT)/i);
-  const direction=match?match[1].toUpperCase():"WAIT";
+  const analysis=result.analysis||"";
+  const match=analysis.match(/ESTIMATE:\s*(BUY|SELL)\b/i);
 
-  $("signal").textContent=direction;
-  $("resultText").textContent=analysis;
+  if(!match){
+   throw new Error("AI did not return a clear BUY or SELL prediction. Try another screenshot.");
+  }
 
-  saveHistory($("pair").value,direction,analysis);
-  $("uploadStatus").textContent="Analysis completed.";
+  const direction=match[1].toUpperCase();
+
+  setSignal(direction);
+  saveHistory($("pair").value,direction);
+
+  $("uploadStatus").textContent="Prediction completed.";
+
  }catch(error){
-  $("signal").textContent="WAIT";
-  $("resultText").textContent=error.message;
-  $("uploadStatus").textContent="Could not complete analysis.";
+  $("signal").textContent="ERROR";
+  $("signalCircle").className="signal-circle";
+  $("resultSubtitle").textContent="ANALYSIS FAILED";
+  $("uploadStatus").textContent=error.message;
+
  }finally{
   button.disabled=!selectedFile;
-  button.textContent="ANALYZE 1-MINUTE CHART";
+  button.textContent="ANALYZE NEXT CANDLE";
  }
 });
 
-function saveHistory(pair,direction,analysis){
+function saveHistory(pair,direction){
  const records=JSON.parse(localStorage.getItem("samanderHistory")||"[]");
+
  records.unshift({
   pair,
   direction,
-  analysis,
   date:new Date().toLocaleString()
  });
+
  localStorage.setItem("samanderHistory",JSON.stringify(records.slice(0,20)));
  showHistory();
 }
@@ -187,20 +420,24 @@ function saveHistory(pair,direction,analysis){
 function showHistory(){
  const records=JSON.parse(localStorage.getItem("samanderHistory")||"[]");
  const box=$("history");
+
  box.replaceChildren();
 
  if(!records.length){
-  box.textContent="No analysis yet.";
+  box.textContent="No prediction yet.";
   return;
  }
 
  records.forEach(item=>{
   const div=document.createElement("div");
   div.className="history-item";
+
   const heading=document.createElement("strong");
   heading.textContent=item.pair+" — "+item.direction;
+
   const date=document.createElement("div");
   date.textContent=item.date;
+
   div.append(heading,date);
   box.appendChild(div);
  });
@@ -213,5 +450,7 @@ $("clearHistory").addEventListener("click",()=>{
 
 showHistory();
 </script>
+
 </body>
-</html>
+ </html>
+ 
